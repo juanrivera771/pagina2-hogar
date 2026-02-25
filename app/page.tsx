@@ -1,0 +1,58 @@
+'use client';
+
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import ProductSlider from '@/components/ProductSlider';
+import Footer from '@/components/Footer';
+import { products } from '@/data/products';
+
+export default function Page() {
+  return (
+    <div className="relative min-h-dvh text-slate-900">
+
+      {/* ===== FONDO GLOBAL ===== */}
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, #ffffff 0%, #F7FBF2 28%, #F1F9E8 50%, #ffffff 100%)',
+          }}
+        />
+
+        <div
+          className="absolute -top-40 -left-40 w-[44rem] h-[44rem] rounded-full blur-3xl opacity-30"
+          style={{
+            background:
+              'radial-gradient(closest-side, #66D11F, rgba(102,209,31,0))',
+          }}
+        />
+
+        <div
+          className="absolute -bottom-56 -right-48 w-[50rem] h-[50rem] rounded-full blur-3xl opacity-20"
+          style={{
+            background:
+              'radial-gradient(closest-side, rgba(15,42,67,0.55), rgba(15,42,67,0))',
+          }}
+        />
+      </div>
+
+      {/* ===== CONTENIDO ===== */}
+      <Navbar />
+      <Hero />
+
+      {/* ===== SLIDER MÁS VENDIDOS ===== */}
+      <section
+        id="masvendidos"
+        className="mx-auto max-w-7xl px-4 py-16"
+      >
+        <ProductSlider
+          products={products}
+          title="Más vendidos"
+        />
+      </section>
+
+      <Footer />
+    </div>
+  );
+}
