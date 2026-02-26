@@ -1,20 +1,41 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 const BRAND_DARK = '#0F2A43';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
-  const scrollTop = () => {
+  // Scroll al top (logo)
+  const scrollTop = useCallback(() => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-  };
+  }, []);
+
+  // Scroll inteligente por sección
+  const handleSectionScroll = useCallback(
+    (id: string) => {
+      if (pathname !== '/') {
+        router.push('/');
+        setTimeout(() => {
+          const el = document.getElementById(id);
+          el?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        const el = document.getElementById(id);
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }
+    },
+    [pathname, router]
+  );
 
   // Detectar scroll para efecto premium
   useEffect(() => {
@@ -22,7 +43,7 @@ export default function Navbar() {
       setScrolled(window.scrollY > 40);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -30,9 +51,10 @@ export default function Navbar() {
     <header
       className={`
         sticky top-0 z-50 transition-all duration-300
-        ${scrolled 
-          ? 'backdrop-blur bg-white/90 shadow-md border-b border-slate-200'
-          : 'bg-white/75'
+        ${
+          scrolled
+            ? 'backdrop-blur bg-white/90 shadow-md border-b border-slate-200'
+            : 'bg-white/75'
         }
       `}
     >
@@ -60,37 +82,33 @@ export default function Navbar() {
 
         {/* MENU */}
         <nav className="hidden md:flex items-center gap-3 text-sm font-medium">
-          <Link
-            href="/#masvendidos"
-            scroll={true}
+          <button
+            onClick={() => handleSectionScroll('masvendidos')}
             className="px-3 py-1.5 rounded-full hover:bg-slate-100 transition"
           >
             Más vendidos
-          </Link>
+          </button>
 
-          <Link
-            href="/#categorias"
-            scroll={true}
+          <button
+            onClick={() => handleSectionScroll('categorias')}
             className="px-3 py-1.5 rounded-full hover:bg-slate-100 transition"
           >
             Categorías
-          </Link>
+          </button>
 
-          <Link
-            href="/#testimonios"
-            scroll={true}
+          <button
+            onClick={() => handleSectionScroll('testimonios')}
             className="px-3 py-1.5 rounded-full hover:bg-slate-100 transition"
           >
             Reseñas
-          </Link>
+          </button>
 
-          <Link
-            href="/#faq"
-            scroll={true}
+          <button
+            onClick={() => handleSectionScroll('faq')}
             className="px-3 py-1.5 rounded-full hover:bg-slate-100 transition"
           >
             FAQ
-          </Link>
+          </button>
 
           <Link
             href="/catalogo"

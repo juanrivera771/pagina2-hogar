@@ -1,7 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { memo } from 'react';
+import { motion } from 'framer-motion';
+import { useCallback } from 'react';
 
 const categorias = [
   'Organización',
@@ -10,7 +11,7 @@ const categorias = [
   'Baño',
   'Iluminación',
   'Otros',
-];
+] as const;
 
 const animaciones = [
   'float-1',
@@ -19,59 +20,78 @@ const animaciones = [
   'float-2',
   'float-1',
   'float-3',
-];
+] as const;
 
-function CategoriasHome() {
+export default function CategoriasHome() {
   const router = useRouter();
 
-  const handleNavigation = (categoria: string) => {
-    router.push(`/catalogo?categoria=${encodeURIComponent(categoria)}`);
-  };
+  // 🔹 Optimización: evita recrear la función en cada render
+  const handleNavigate = useCallback(
+    (categoria: string) => {
+      router.push(`/catalogo?categoria=${encodeURIComponent(categoria)}`);
+    },
+    [router]
+  );
 
   return (
     <section
       id="categorias"
-      className="mx-auto max-w-7xl px-4 py-28"
+      className="mx-auto max-w-7xl px-4 py-28 scroll-mt-28"
     >
-      <h2 className="text-3xl md:text-4xl font-bold mb-16 text-slate-800 text-center">
+      <h2 className="text-3xl md:text-4xl font-bold mb-16 text-slate-800 tracking-tight">
         Explora por categorías
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-        {categorias.map((cat, index) => (
-          <button
-            key={cat}
-            onClick={() => handleNavigation(cat)}
-            className={`
-              ${animaciones[index]}
-              glass
-              group
-              rounded-2xl
-              p-8
-              text-center
-              transition-all
-              duration-500
-              ease-out
-              hover:-translate-y-3
-              hover:scale-105
-              hover:shadow-2xl
-              focus:outline-none
-              focus:ring-2
-              focus:ring-green-500
-            `}
-          >
-            <span className="font-semibold text-slate-700 text-lg transition-colors duration-300 group-hover:text-green-600">
-              {cat}
-            </span>
+        {categorias.map((cat, index) => {
+          const isLeft = index % 2 === 0;
 
-            <span className="block opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 text-sm mt-4 text-green-600 font-medium">
-              Ver productos →
-            </span>
-          </button>
-        ))}
+          return (
+            <motion.div
+              key={cat}
+              initial={{ opacity: 0, x: isLeft ? -120 : 120 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              viewport={{ once: true, amount: 0.3 }}
+              className={`${animaciones[index]} will-change-transform`}
+              whileHover={{ y: -6 }} // 🔹 micro-elevación suave
+              whileTap={{ scale: 0.97 }} // 🔹 interacción moderna
+              onClick={() => handleNavigate(cat)}
+            >
+              <div
+                className="
+                  group cursor-pointer
+                  rounded-2xl
+                  bg-white/80 backdrop-blur-sm
+                  shadow-xl
+                  p-8
+                  text-center
+                  transition-all duration-500
+                  hover:scale-110
+                  hover:shadow-2xl
+                  hover:bg-white
+                  relative overflow-hidden
+                "
+              >
+                {/* Glow sutil sin afectar tu diseño */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-700 bg-gradient-to-br from-green-400/0 via-green-400/0 to-green-400/10" />
+
+                <h3 className="relative font-semibold text-slate-700 text-lg group-hover:text-green-600 transition">
+                  {cat}
+                </h3>
+
+                <div className="relative opacity-0 group-hover:opacity-100 transition duration-300 text-sm mt-4 text-green-600 font-medium">
+                  Ver productos →
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
 }
-
-export default memo(CategoriasHome);
