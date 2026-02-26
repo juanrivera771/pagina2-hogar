@@ -2,6 +2,7 @@
 
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import CategoriasHome from '@/components/CategoriasHome';
 import ProductSlider from '@/components/ProductSlider';
 import Footer from '@/components/Footer';
 import { products } from '@/data/products';
@@ -20,6 +21,7 @@ export default function Page() {
           }}
         />
 
+        {/* Glow verde superior */}
         <div
           className="absolute -top-40 -left-40 w-[44rem] h-[44rem] rounded-full blur-3xl opacity-30"
           style={{
@@ -28,6 +30,7 @@ export default function Page() {
           }}
         />
 
+        {/* Glow oscuro inferior */}
         <div
           className="absolute -bottom-56 -right-48 w-[50rem] h-[50rem] rounded-full blur-3xl opacity-20"
           style={{
@@ -40,6 +43,9 @@ export default function Page() {
       {/* ===== CONTENIDO ===== */}
       <Navbar />
       <Hero />
+
+      {/* ===== CATEGORÍAS (NUEVO BLOQUE) ===== */}
+      <CategoriasHome />
 
       {/* ===== SLIDER MÁS VENDIDOS ===== */}
       <section
